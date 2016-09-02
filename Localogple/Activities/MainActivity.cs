@@ -8,11 +8,14 @@ using Localogple.Services;
 namespace Localogple.Activities
 {
     [Activity(Label = "Localogple", MainLauncher = true, Icon = "@drawable/icon")]
-        [Register("com.villiard.localogple.activities.MainActivity")]
+    [Register("com.villiard.localogple.activities.MainActivity")]
     public class MainActivity : Activity
     {
         int count = 1;
         private static EditText _editText;
+
+        private LocationUpdateReceiver _locationUpdateReceiver;
+        private IntentFilter _locationUpdateIntentFilter;
 
         protected override void OnCreate(Bundle bundle)
         {
@@ -23,10 +26,10 @@ namespace Localogple.Activities
             StartService(locationServiceIntent);
 
             //Listen to location updates.
-            var locationUpdateReceiver = new LocationUpdateReceiver();
-            var intentFilter = new IntentFilter();
-            intentFilter.AddAction(Services.LocationService.Actions.LocationUpdate);
-            RegisterReceiver(locationUpdateReceiver, intentFilter);
+            _locationUpdateReceiver = new LocationUpdateReceiver();
+            _locationUpdateIntentFilter = new IntentFilter();
+            _locationUpdateIntentFilter.AddAction(Services.LocationService.Actions.LocationUpdate);
+            RegisterReceiver(_locationUpdateReceiver, _locationUpdateIntentFilter);
 
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
@@ -38,6 +41,13 @@ namespace Localogple.Activities
             button.Click += delegate { button.Text = string.Format("{0} clicks!", count++); };
 
             _editText = FindViewById<EditText>(Resource.Id.editText_locationLog);
+        }
+
+        protected override void OnDestroy()
+        {
+            UnregisterReceiver(_locationUpdateReceiver);
+
+            base.OnDestroy();
         }
 
         [BroadcastReceiver]

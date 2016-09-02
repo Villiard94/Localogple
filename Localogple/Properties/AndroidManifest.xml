@@ -7,6 +7,8 @@
     <receiver android:name="com.villiard.localogple.receivers.BootReceiver">
       <intent-filter>
         <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.PACKAGE_ADDED" />
+        <action android:name="android.intent.action.PACKAGE_INSTALL" />
       </intent-filter>
     </receiver>
   </application>

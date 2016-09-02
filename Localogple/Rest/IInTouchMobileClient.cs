@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Localogple.Rest.Requests;
+using Localogple.Rest.Responses;
 using Refit;
 
 namespace Localogple.Rest
@@ -7,6 +8,6 @@ namespace Localogple.Rest
     public interface IInTouchMobileClient
     {
         [Post("/SetLocation")]
-        Task LogLocation(LogLocationRequest request);
+        Task<Response> LogLocation(LogLocationRequest request);
     }
 }

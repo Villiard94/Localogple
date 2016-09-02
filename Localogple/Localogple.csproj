@@ -112,6 +112,7 @@
     <Compile Include="Rest\IInTouchMobileClient.cs" />
     <Compile Include="Rest\InTouchMobileRestService.cs" />
     <Compile Include="Rest\Requests\LogLocationRequest.cs" />
+    <Compile Include="Rest\Responses\Response.cs" />
     <Compile Include="Services\LocationService.cs" />
   </ItemGroup>
   <ItemGroup>

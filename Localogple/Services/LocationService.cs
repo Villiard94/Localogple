@@ -1,6 +1,5 @@
 using System;
 using System.Globalization;
-using System.Net.Http;
 using Android.App;
 using Android.Content;
 using Android.Gms.Common;
@@ -11,7 +10,6 @@ using Android.OS;
 using Android.Util;
 using Localogple.Rest;
 using Localogple.Rest.Requests;
-using ModernHttpClient;
 using ILocationListener = Android.Gms.Location.ILocationListener;
 
 namespace Localogple.Services
@@ -29,7 +27,7 @@ namespace Localogple.Services
             public const string Position = "position";
         }
 
-        private const long LogTime = 10 * 1000; //10 seconds.
+        private const long LogTime = 10*1000; //10 seconds.
         private const long LogDistance = 200; //200 meters
 
         private GoogleApiClient _googleApiClient;
@@ -97,24 +95,17 @@ namespace Localogple.Services
             var request = CreateLogRequest(location);
             try
             {
-                await _itmClient.LogLocation(request);
+                var response = await _itmClient.LogLocation(request);
+
+                if (!response.Success)
+                {
+                    throw new Exception(response.Error);
+                }
             }
             catch (Exception ex)
             {
                 Log.Info(PackageName, ex.Message);
             }
-        }
-
-        private LogLocationRequest CreateLogRequest(Location location)
-        {
-            return new LogLocationRequest
-            {
-                Dates = new[] { DateTime.UtcNow.ToString(CultureInfo.InvariantCulture) },
-                Langugage = "en-US",
-                Latitudes = new[] { location.Latitude.ToString(CultureInfo.InvariantCulture) },
-                Longitudes = new[] { location.Longitude.ToString(CultureInfo.InvariantCulture) },
-                UserId = "sxvilliard"
-            };
         }
 
         public override bool OnUnbind(Intent intent)
@@ -125,6 +116,20 @@ namespace Localogple.Services
             _googleApiClient = null;
 
             return base.OnUnbind(intent);
+        }
+
+        private LogLocationRequest CreateLogRequest(Location location)
+        {
+            return new LogLocationRequest
+            {
+                Dates = new[] { DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1, 0, 0, 0, 0)).Ticks/TimeSpan.TicksPerSecond },
+                Language = "en-US",
+                Latitudes = new[] { location.Latitude.ToString(CultureInfo.InvariantCulture) },
+                Longitudes = new[] { location.Longitude.ToString(CultureInfo.InvariantCulture) },
+                UserId = "wowomgniceuser",
+                ActiveCompany = "001",
+                Token = "2b1a6db6-2ff0-4c31-85a7-da1ee0e70d82"
+            };
         }
     }
 }
